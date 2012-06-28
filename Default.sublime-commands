@@ -1,0 +1,18 @@
+[
+    {
+        "caption": "vlt: Import",
+        "command": "vlt_import"
+    },
+    {
+        "caption": "vlt: Export",
+        "command": "vlt_export"
+    },
+    {
+        "caption": "vlt: Delete",
+        "command": "vlt_delete"
+    },
+    {
+        "caption": "vlt: Commit",
+        "command": "vlt_commit"
+    }
+]
