@@ -1,4 +1,5 @@
 # Written by Tomek Wytrebowicz (tomalecpub@gmail.com)
+# TODO: vlt add directories (-N non recursive)
 import sublime, sublime_plugin
 
 import os
@@ -46,7 +47,26 @@ def Commit(in_folder, in_filename):
     return VltCommandOnFile("commit", in_folder, in_filename);
 
 class VltAutoCommit(sublime_plugin.EventListener):
+    preSaveIsFileInRepo = 0
+    def on_pre_save(self, view):
+        perforce_settings = sublime.load_settings('vlt.sublime-settings')
+
+        self.preSaveIsFileInRepo = 0
+
+        # check if this part of the plugin is enabled
+        if(not perforce_settings.get('vlt_auto_add')):
+            WarnUser("Auto Add disabled")
+            return
+
+        folder_name, filename = os.path.split(view.file_name())
+        self.preSaveIsFileInRepo = IsFileInRepo(folder_name, filename)
+
     def on_post_save(self, view):
+        if(self.preSaveIsFileInRepo == -1):
+            folder_name, filename = os.path.split(view.file_name())
+            success, message = Add(folder_name, filename)
+            LogResults(success, message)
+        else:
             folder_name, filename = os.path.split(view.file_name())
             success, message = Commit(folder_name, filename)
             LogResults(success, message)
@@ -59,3 +79,49 @@ class VltCommitCommand(sublime_plugin.TextCommand):
             LogResults(success, message)
         else:
             WarnUser("View does not contain a file")
+
+# Add section
+def Add(in_folder, in_filename):
+    # Add the file
+    success, message = VltCommandOnFile("add", in_folder, in_filename);
+    if(not success or message[0,2]!="A "):
+        return 0, message
+    return VltCommandOnFile("ci", in_folder, in_filename);
+
+class VltAddCommand(sublime_plugin.TextCommand):
+    def run(self, edit):
+        if(self.view.file_name()):
+            folder_name, filename = os.path.split(self.view.file_name())
+            success, message = Add(folder_name, filename)
+            LogResults(success, message)
+        else:
+            WarnUser("View does not contain a file")
+
+def IsFileInRepo(in_folder, in_filename):
+    success, message =  VltCommandOnFile("info", in_folder, in_filename);
+    if(not success):
+        return 0, message
+    # locate the line containing "Status: " and extract the following status
+    startindex = result.find("Status: ")
+    if(startindex == -1):
+        WarnUser("Unexpected output from 'vlt info'.")
+        return -1
+    
+    startindex += 8 # advance after "Status: "
+
+    endindex = result.find("\n", startindex) 
+    if(endindex == -1):
+        WarnUser("Unexpected output from 'vlt info'.")
+        return -1
+
+    status = result[startindex:endindex].strip();
+    if(os.path.isfile(os.path.join(in_folder, in_filename))): # file exists on disk, not being added
+        if(status != "unknown"):
+            return 1
+        else:
+            return 0
+    else:
+        if(status != "unknown"):
+            return -1 # will be in the depot, it's being added
+        else:
+            return 0

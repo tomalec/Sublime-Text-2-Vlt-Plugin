@@ -14,5 +14,9 @@
     {
         "caption": "vlt: Commit",
         "command": "vlt_commit"
+    },
+    {
+        "caption": "vlt: Add",
+        "command": "vlt_add"
     }
 ]
