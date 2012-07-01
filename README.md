@@ -7,6 +7,9 @@ Tomek Wytrebowicz (tomalecwp@gmail.com)
 
 Available at https://github.com/tomalec/Sublime-Text-2-Vlt-Plugin
 
+# Usage
+
+All you need is already checked out repo. All commands should work for all files under your repo root directory.
 
 # License
 
