@@ -2,4 +2,5 @@
 	"vlt_auto_commit": true, // when true, commit will occur
 	"vlt_auto_add": true, // when true, add will occur
 	"vlt_warnings_enabled": true, // will output messages when warnings happen
+	"vlt_log_warnings_to_status": false
 }

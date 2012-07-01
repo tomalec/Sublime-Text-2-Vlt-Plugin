@@ -1,4 +1,17 @@
 [
+    
+    {
+        "caption": "vlt: Commit",
+        "command": "vlt_commit"
+    },
+    {
+        "caption": "vlt: Add",
+        "command": "vlt_add"
+    },
+    {
+        "caption": "vlt: Update",
+        "command": "vlt_update"
+    },
     {
         "caption": "vlt: Import",
         "command": "vlt_import"
@@ -10,13 +23,5 @@
     {
         "caption": "vlt: Delete",
         "command": "vlt_delete"
-    },
-    {
-        "caption": "vlt: Commit",
-        "command": "vlt_commit"
-    },
-    {
-        "caption": "vlt: Add",
-        "command": "vlt_add"
     }
 ]

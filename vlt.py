@@ -22,7 +22,7 @@ def VltCommandOnFile(in_command, in_folder, in_filename):
     command = ConstructCommand('vlt ' + in_command + ' "' + in_filename + '"')
     p = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=in_folder, shell=True)
     result, err = p.communicate()
-
+    
     if(not err):
         return 1, result.strip()
     else:
@@ -41,6 +41,7 @@ def LogResults(success, message):
         print "vlt: " + message
     else:
         WarnUser(message);
+
 # Commit section
 def Commit(in_folder, in_filename):
     # Commit the file
@@ -49,12 +50,12 @@ def Commit(in_folder, in_filename):
 class VltAutoCommit(sublime_plugin.EventListener):
     preSaveIsFileInRepo = 0
     def on_pre_save(self, view):
-        perforce_settings = sublime.load_settings('vlt.sublime-settings')
+        vlt_settings = sublime.load_settings('vlt.sublime-settings')
 
         self.preSaveIsFileInRepo = 0
 
         # check if this part of the plugin is enabled
-        if(not perforce_settings.get('vlt_auto_add')):
+        if(not vlt_settings.get('vlt_auto_add')):
             WarnUser("Auto Add disabled")
             return
 
@@ -84,7 +85,8 @@ class VltCommitCommand(sublime_plugin.TextCommand):
 def Add(in_folder, in_filename):
     # Add the file
     success, message = VltCommandOnFile("add", in_folder, in_filename);
-    if(not success or message[0,2]!="A "):
+
+    if(not success or message[0:2]!="A "):
         return 0, message
     return VltCommandOnFile("ci", in_folder, in_filename);
 
@@ -102,19 +104,19 @@ def IsFileInRepo(in_folder, in_filename):
     if(not success):
         return 0, message
     # locate the line containing "Status: " and extract the following status
-    startindex = result.find("Status: ")
+    startindex = message.find("Status: ")
     if(startindex == -1):
         WarnUser("Unexpected output from 'vlt info'.")
         return -1
     
     startindex += 8 # advance after "Status: "
 
-    endindex = result.find("\n", startindex) 
+    endindex = message.find("\n", startindex) 
     if(endindex == -1):
         WarnUser("Unexpected output from 'vlt info'.")
         return -1
 
-    status = result[startindex:endindex].strip();
+    status = message[startindex:endindex].strip();
     if(os.path.isfile(os.path.join(in_folder, in_filename))): # file exists on disk, not being added
         if(status != "unknown"):
             return 1
@@ -125,3 +127,24 @@ def IsFileInRepo(in_folder, in_filename):
             return -1 # will be in the depot, it's being added
         else:
             return 0
+
+
+# Update section
+def Update(in_folder, in_filename):
+    # update the file
+    return VltCommandOnFile("update", in_folder, in_filename);
+
+class VltUpdateCommand(sublime_plugin.TextCommand):
+    def run(self, edit): 
+        if(self.view.file_name()):
+            folder_name, filename = os.path.split(self.view.file_name())
+
+            if(IsFileInRepo(folder_name, filename)):
+                success, message = Update(folder_name, filename)
+            else:
+                success = 0
+                message = "File is not in the repo."
+
+            LogResults(success, message)
+        else:
+            WarnUser("View does not contain a file")

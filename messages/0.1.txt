@@ -1,0 +1,6 @@
+Vlt integration 0.1 changelog:
+
+Feature:
+ - (auto) commit a file
+ - (auto) add a file, directories not supported yet
+ - updating a file
