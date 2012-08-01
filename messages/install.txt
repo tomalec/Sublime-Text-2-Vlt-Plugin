@@ -6,4 +6,4 @@ and it is still in progress.
 Please direct any feedback to tomalecwp@gmail.com or through github at https://github.com/tomalec/Sublime-Text-2-Vlt-Plugin.
 
 
-Tomek Wytrębowicz
+Tomek Wytrebowicz
