@@ -20,6 +20,10 @@
         "command": "vlt_resolve"
     },
     {
+        "caption": "vlt: Revert...",
+        "command": "vlt_revert_choice"
+    },
+    {
         "caption": "vlt: Status",
         "command": "vlt_status"
     },

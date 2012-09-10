@@ -263,6 +263,7 @@ class VltStatusCommand(VltWindowCommand):
         #root = vlt_root(self.get_working_dir())
         #vlt even if asked for other destination always prints paths relative to current working dir
         root = self.get_working_dir()
+        #get rid of (mime/type)
         picked_file = picked_file.split(" (")[0]
         print os.path.join(root, picked_file)
         print os.path.isfile(os.path.join(root, picked_file))
@@ -449,3 +450,29 @@ class VltResolveCommand(sublime_plugin.TextCommand):
 
 
 
+
+class VltRevertChoiceCommand(VltStatusCommand):
+#VltStatusCommand):
+    def show_status_list(self):
+        self.results = [[" - All Files", ""]] + self.results
+        self.quick_panel(self.results, self.panel_done,
+            sublime.MONOSPACE_FONT)
+
+    def panel_followup(self, picked_status, picked_file, picked_index):
+        working_dir=self.get_working_dir()
+
+        command = ['vlt']
+
+        #get rid of (mime/type)
+        picked_file = picked_file.strip('"').split(" (")[0]
+        #if os.path.isfile(working_dir+"/"+picked_file):
+        command += ['revert']
+        #else:
+        #    command += ['rm']
+        command += [picked_file]
+
+        self.run_command(command, self.rerun,
+            working_dir=working_dir)
+
+    def rerun(self, result):
+        self.run()
