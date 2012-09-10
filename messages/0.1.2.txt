@@ -1,0 +1,11 @@
+Vlt integration 0.1.2 changelog:
+
+Feature:
+ - Status quick panel added:
+   - show status of current vlt root
+   - show diff on selected entities
+ - Add.. quick panel: 
+   - show new files and folders
+   - add selected files or folders
+   - add all
+ - resolve command, mark file as resolved
