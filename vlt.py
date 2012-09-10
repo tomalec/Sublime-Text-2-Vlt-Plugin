@@ -454,7 +454,7 @@ class VltResolveCommand(sublime_plugin.TextCommand):
 class VltRevertChoiceCommand(VltStatusCommand):
 #VltStatusCommand):
     def show_status_list(self):
-        self.results = [[" - All Files", ""]] + self.results
+        #self.results = [[" - All Files", ""]] + self.results
         self.quick_panel(self.results, self.panel_done,
             sublime.MONOSPACE_FONT)
 
