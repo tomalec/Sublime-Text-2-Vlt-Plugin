@@ -8,4 +8,6 @@ Feature:
    - show new files and folders
    - add selected files or folders
    - add all
+ - Revert.. panel, revert modified entries
+ - Update Root command: updates entire repo.
  - resolve command, mark file as resolved

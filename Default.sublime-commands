@@ -16,6 +16,10 @@
         "command": "vlt_update"
     },
     {
+        "caption": "vlt: Update Root",
+        "command": "vlt_update_root"
+    },
+    {
         "caption": "vlt: Resolve",
         "command": "vlt_resolve"
     },

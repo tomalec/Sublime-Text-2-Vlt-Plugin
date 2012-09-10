@@ -434,7 +434,21 @@ class VltUpdateCommand(sublime_plugin.TextCommand):
             LogResults(success, message)
         else:
             WarnUser("View does not contain a file")
-# Update section
+
+class VltUpdateRootCommand(VltWindowCommand):
+    force_open = False
+
+    def run(self):
+        self.run_command(['vlt', 'update', vlt_root(self.get_working_dir()) ], self.update_done, True)
+
+    def update_done(self, result):
+        if result.strip():
+            self.scratch(result, title="Vlt Update")
+        else:
+            sublime.status_message("Nothing to show")
+
+    
+
 def Resolve(in_folder, in_filename):
     # resolve the file
     return VltCommandOnFile("resolve", in_folder, in_filename);
@@ -447,8 +461,6 @@ class VltResolveCommand(sublime_plugin.TextCommand):
             LogResults(success, message)
         else:
             WarnUser("View does not contain a file")
-
-
 
 
 class VltRevertChoiceCommand(VltStatusCommand):
