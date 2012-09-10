@@ -263,9 +263,10 @@ class VltStatusCommand(VltWindowCommand):
         #root = vlt_root(self.get_working_dir())
         #vlt even if asked for other destination always prints paths relative to current working dir
         root = self.get_working_dir()
+        picked_file = picked_file.split(" (")[0]
         print os.path.join(root, picked_file)
         print os.path.isfile(os.path.join(root, picked_file))
-        if picked_status == '?' or s.get('status_opens_file') or self.force_open:
+        if picked_status == '?' or picked_status == 'A' or s.get('status_opens_file') or self.force_open:
             if(os.path.isfile(os.path.join(root, picked_file))): self.window.open_file(os.path.join(root, picked_file))
         else:
             self.run_command(['vlt', 'diff', picked_file.strip('"')],
