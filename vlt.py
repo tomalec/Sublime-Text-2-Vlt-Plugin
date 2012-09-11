@@ -298,41 +298,66 @@ def Commit(in_folder, in_filename):
     # Commit the file
     return VltCommandOnFile("commit", in_folder, in_filename);
 
+# A base for all vlt commands that work with the file in the active view
+class VltTextCommand(VltCommand, sublime_plugin.TextCommand):
+    def active_view(self):
+        return self.view
+
+    def is_enabled(self):
+        # First, is this actually a file on the file system?
+        if self.view.file_name() and len(self.view.file_name()) > 0:
+            return vlt_root(self.get_working_dir())
+
+    def get_file_name(self):
+        return os.path.basename(self.view.file_name())
+
+    def get_working_dir(self):
+        return os.path.realpath(os.path.dirname(self.view.file_name()))
+
+    def get_window(self):
+        # Fun discovery: if you switch tabs while a command is working,
+        # self.view.window() is None. (Admittedly this is a consequence
+        # of my deciding to do async command processing... but, hey,
+        # got to live with that now.)
+        # I did try tracking the window used at the start of the command
+        # and using it instead of view.window() later, but that results
+        # panels on a non-visible window, which is especially useless in
+        # the case of the quick panel.
+        return self.view.window() or sublime.active_window()
+        # So, this is not necessarily ideal, but it does work.
+
+class VltCommitCommand(VltTextCommand):
+    def run(self, edit):
+        self.run_command(['vlt', 'commit', os.path.join(self.get_working_dir(), self.get_file_name())], self.commit_done, True)
+
+    def commit_done(self, result):
+        sublime.status_message(result)
+
+
 class VltAutoCommit(sublime_plugin.EventListener):
     preSaveIsFileInRepo = 0
-    def on_pre_save(self, view):
-        print "vlt: presave"
+    def on_pre_save(self, view): 
         vlt_settings = sublime.load_settings('vlt.sublime-settings')
 
         self.preSaveIsFileInRepo = 0
-
         # check if this part of the plugin is enabled
-        if(not vlt_settings.get('vlt_auto_add')):
+        if not vlt_settings.get('vlt_auto_add'):
             WarnUser("Auto Add disabled")
             return
-
         folder_name, filename = os.path.split(view.file_name())
         self.preSaveIsFileInRepo = IsFileInRepo(folder_name, filename)
-
     def on_post_save(self, view):
-        print "vlt: postsave"
         if(self.preSaveIsFileInRepo == -1):
+            print "vlt: postsave1"
             folder_name, filename = os.path.split(view.file_name())
             success, message = Add(folder_name, filename)
             LogResults(success, message)
         else:
-            folder_name, filename = os.path.split(view.file_name())
-            success, message = Commit(folder_name, filename)
-            LogResults(success, message)
-
-class VltCommitCommand(sublime_plugin.TextCommand):
-    def run(self, edit):
-        if(self.view.file_name()):
-            folder_name, filename = os.path.split(self.view.file_name())
-            success, message = Commit(folder_name, filename)
-            LogResults(success, message)
-        else:
-            WarnUser("View does not contain a file")
+            vlt_settings = sublime.load_settings('vlt.sublime-settings')
+            if not vlt_settings.get('vlt_auto_commit'):
+                WarnUser("Auto commit disabled")
+                return
+            view.run_command('vlt_commit')
 
 # Add section
 def Add(in_folder, in_filename):
