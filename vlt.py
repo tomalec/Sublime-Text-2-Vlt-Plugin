@@ -68,6 +68,9 @@ class VltAutoCommit(sublime_plugin.EventListener):
             success, message = Add(folder_name, filename)
             LogResults(success, message)
         else:
+            if(not sublime.load_settings('vlt.sublime-settings').get('vlt_auto_commit')):
+                WarnUser("Auto Commit disabled")
+            return
             folder_name, filename = os.path.split(view.file_name())
             success, message = Commit(folder_name, filename)
             LogResults(success, message)
