@@ -265,8 +265,6 @@ class VltStatusCommand(VltWindowCommand):
         root = self.get_working_dir()
         #get rid of (mime/type)
         picked_file = picked_file.split(" (")[0]
-        print os.path.join(root, picked_file)
-        print os.path.isfile(os.path.join(root, picked_file))
         if picked_status == '?' or picked_status == 'A' or s.get('status_opens_file') or self.force_open:
             if(os.path.isfile(os.path.join(root, picked_file))): self.window.open_file(os.path.join(root, picked_file))
         else:
@@ -348,7 +346,6 @@ class VltAutoCommit(sublime_plugin.EventListener):
         self.preSaveIsFileInRepo = IsFileInRepo(folder_name, filename)
     def on_post_save(self, view):
         if(self.preSaveIsFileInRepo == -1):
-            print "vlt: postsave1"
             folder_name, filename = os.path.split(view.file_name())
             success, message = Add(folder_name, filename)
             LogResults(success, message)
@@ -395,8 +392,6 @@ class VltAddChoiceCommand(VltStatusCommand):
         else:
             command = ['vlt']
             picked_file = picked_file.strip('"')
-            print working_dir+"/"+picked_file
-            print os.path.isfile(working_dir+"/"+picked_file)
             #if os.path.isfile(working_dir+"/"+picked_file):
             command += ['add']
             #else:
