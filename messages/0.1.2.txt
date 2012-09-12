@@ -1,0 +1,4 @@
+Vlt integration 0.1.2 changelog:
+
+Bugfix:
+ - disabling autocommits
