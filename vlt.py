@@ -117,7 +117,7 @@ class CommandThread(threading.Thread):
             main_thread(self.on_done, e.returncode)
         except OSError, e:
             if e.errno == 2:
-                main_thread(sublime.error_message, "Git binary could not be found in PATH\n\nConsider using the git_command setting for the Git plugin\n\nPATH is: %s" % os.environ['PATH'])
+                main_thread(sublime.error_message, "Vlt binary could not be found in PATH\n\nConsider using the vlt_command setting for the vlt plugin\n\nPATH is: %s" % os.environ['PATH'])
             else:
                 raise e
 
@@ -134,7 +134,7 @@ class VltCommand(object):
         if 'fallback_encoding' not in kwargs and self.active_view() and self.active_view().settings().get('fallback_encoding'):
             kwargs['fallback_encoding'] = self.active_view().settings().get('fallback_encoding').rpartition('(')[2].rpartition(')')[0]
 
-        s = sublime.load_settings("Vlt.sublime-settings")
+        s = sublime.load_settings("vlt.sublime-settings")
         if s.get('save_first') and self.active_view() and self.active_view().is_dirty() and not no_save:
             self.active_view().run_command('save')
         if command[0] == 'vlt' and s.get('vlt_command'):
