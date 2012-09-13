@@ -1,0 +1,14 @@
+Vlt integration 0.1.3 changelog:
+I get inspired by, and copied lots of code from https://github.com/kemayo/sublime-text-2-git
+
+Features:
+ - Status quick panel added:
+   - show status of current vlt root
+   - show diff on selected entities
+ - Add.. quick panel: 
+   - show new files and folders
+   - add selected files or folders
+   - add all
+ - Revert.. panel, revert modified entries
+ - Update Root command: updates entire repo.
+ - Customizable vlt command path (vlt settings: vlt_command)

@@ -1,7 +1,6 @@
 Vlt (CQ) integration by Tomek Wytrebowicz (tomalecwp@gmail.com)
 
-Code is based on Perforce Plugin https://github.com/ericmartel/Sublime-Text-2-Perforce-Plugin by Eric Marings to control which features are enabled,
-and it is still in progress.
+Code is based on Perforce Plugin https://github.com/ericmartel/Sublime-Text-2-Perforce-Plugin by Eric Marings and https://github.com/kemayo/sublime-text-2-git
 
 Please direct any feedback to tomalecwp@gmail.com or through github at https://github.com/tomalec/Sublime-Text-2-Vlt-Plugin.
 

@@ -1,5 +1,4 @@
 [
-    
     {
         "caption": "vlt: Commit",
         "command": "vlt_commit"
@@ -9,8 +8,28 @@
         "command": "vlt_add"
     },
     {
+        "caption": "vlt: Add...",
+        "command": "vlt_add_choice"
+    },
+    {
         "caption": "vlt: Update",
         "command": "vlt_update"
+    },
+    {
+        "caption": "vlt: Update Root",
+        "command": "vlt_update_root"
+    },
+    {
+        "caption": "vlt: Resolve",
+        "command": "vlt_resolve"
+    },
+    {
+        "caption": "vlt: Revert...",
+        "command": "vlt_revert_choice"
+    },
+    {
+        "caption": "vlt: Status",
+        "command": "vlt_status"
     },
     {
         "caption": "vlt: Import",
