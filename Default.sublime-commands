@@ -4,6 +4,10 @@
         "command": "vlt_commit"
     },
     {
+        "caption": "vlt: Commit All",
+        "command": "vlt_commit_all"
+    },
+    {
         "caption": "vlt: Add",
         "command": "vlt_add"
     },
@@ -16,8 +20,8 @@
         "command": "vlt_update"
     },
     {
-        "caption": "vlt: Update Root",
-        "command": "vlt_update_root"
+        "caption": "vlt: Update All",
+        "command": "vlt_update"
     },
     {
         "caption": "vlt: Resolve",

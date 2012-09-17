@@ -324,6 +324,14 @@ class VltTextCommand(VltCommand, sublime_plugin.TextCommand):
         return self.view.window() or sublime.active_window()
         # So, this is not necessarily ideal, but it does work.
 
+class VltCommitAllCommand(VltTextCommand):
+    def run(self, edit):
+        self.run_command(['vlt', 'commit'], self.commit_done, True)
+
+    def commit_done(self, result):
+        sublime.status_message(result)
+
+
 class VltCommitCommand(VltTextCommand):
     def run(self, edit):
         self.run_command(['vlt', 'commit', os.path.join(self.get_working_dir(), self.get_file_name())], self.commit_done, True)
@@ -455,7 +463,7 @@ class VltUpdateCommand(sublime_plugin.TextCommand):
         else:
             WarnUser("View does not contain a file")
 
-class VltUpdateRootCommand(VltWindowCommand):
+class VltUpdateAllCommand(VltWindowCommand):
     force_open = False
 
     def run(self):
