@@ -1,0 +1,4 @@
+Vlt integration 0.1.4 changelog:
+
+Features:
+ - Revert All option added to Revert panel

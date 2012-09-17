@@ -486,22 +486,24 @@ class VltResolveCommand(sublime_plugin.TextCommand):
 class VltRevertChoiceCommand(VltStatusCommand):
 #VltStatusCommand):
     def show_status_list(self):
-        #self.results = [[" - All Files", ""]] + self.results
+        self.results = [[" - All Files", "revert all files"]] + self.results
         self.quick_panel(self.results, self.panel_done,
             sublime.MONOSPACE_FONT)
 
     def panel_followup(self, picked_status, picked_file, picked_index):
         working_dir=self.get_working_dir()
+        if picked_index == 0:
+            command = ['vlt', 'revert -R', vlt_root(working_dir)]
+        else:
+            command = ['vlt']
 
-        command = ['vlt']
-
-        #get rid of (mime/type)
-        picked_file = picked_file.strip('"').split(" (")[0]
-        #if os.path.isfile(working_dir+"/"+picked_file):
-        command += ['revert']
-        #else:
-        #    command += ['rm']
-        command += [picked_file]
+            #get rid of (mime/type)
+            picked_file = picked_file.strip('"').split(" (")[0]
+            #if os.path.isfile(working_dir+"/"+picked_file):
+            command += ['revert']
+            #else:
+            #    command += ['rm']
+            command += [picked_file]
 
         self.run_command(command, self.rerun,
             working_dir=working_dir)
