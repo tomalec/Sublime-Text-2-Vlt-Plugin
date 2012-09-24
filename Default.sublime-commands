@@ -21,7 +21,7 @@
     },
     {
         "caption": "vlt: Update All",
-        "command": "vlt_update"
+        "command": "vlt_update_all"
     },
     {
         "caption": "vlt: Resolve",
