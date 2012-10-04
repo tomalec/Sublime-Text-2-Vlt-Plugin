@@ -53,7 +53,7 @@ def ConstructCommand(in_command):
 
 def VltCommandOnFile(in_command, in_folder, in_filename):
     command = ConstructCommand('vlt ' + in_command + ' "' + in_filename + '"')
-    print "vlt [debug]: " + (vlt_root(in_folder) or "[no-vlt repo]") + ': '+ 'vlt ' + in_command + ' "' + in_filename + '"'
+    #print "vlt [debug]: " + (vlt_root(in_folder) or "[no-vlt repo]") + ': '+ 'vlt ' + in_command + ' "' + in_filename + '"'
     p = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=in_folder, shell=True)
     result, err = p.communicate()
     
@@ -135,13 +135,15 @@ class VltCommand(object):
             kwargs['fallback_encoding'] = self.active_view().settings().get('fallback_encoding').rpartition('(')[2].rpartition(')')[0]
 
         s = sublime.load_settings("vlt.sublime-settings")
+
         if s.get('save_first') and self.active_view() and self.active_view().is_dirty() and not no_save:
+            #print "vlt[debug] save first" 
             self.active_view().run_command('save')
         if command[0] == 'vlt' and s.get('vlt_command'):
             command[0] = s.get('vlt_command')
         #if not callback:
         #    callback = self.generic_done
-        print "vlt[debug]: " + ' '.join(command)
+        #print "vlt[debug]: " + ' '.join(command)
 
         thread = CommandThread(command, callback, **kwargs)
         thread.start()
@@ -338,6 +340,7 @@ class VltCommitCommand(VltTextCommand):
 
     def commit_done(self, result):
         sublime.status_message(result)
+        #print "vlt[debug]: " + result
 
 
 class VltAutoCommit(sublime_plugin.EventListener):
@@ -477,18 +480,15 @@ class VltUpdateAllCommand(VltWindowCommand):
 
     
 
-def Resolve(in_folder, in_filename):
-    # resolve the file
-    return VltCommandOnFile("resolve", in_folder, in_filename);
-
-class VltResolveCommand(sublime_plugin.TextCommand):
+class VltResolveCommand(VltTextCommand):
     def run(self, edit):
-        if(self.view.file_name()):
-            folder_name, filename = os.path.split(self.view.file_name())
-            success, message = Commit(folder_name, filename)
-            LogResults(success, message)
+        self.run_command(['vlt', 'resolve', os.path.join(self.get_working_dir(), self.get_file_name())], self.commit_done, True)
+
+    def commit_done(self, result):
+        if result.strip():
+            self.scratch(result, title="Vlt Update")
         else:
-            WarnUser("View does not contain a file")
+            sublime.status_message(result)
 
 
 class VltRevertChoiceCommand(VltStatusCommand):
@@ -500,21 +500,23 @@ class VltRevertChoiceCommand(VltStatusCommand):
 
     def panel_followup(self, picked_status, picked_file, picked_index):
         working_dir=self.get_working_dir()
+        command = ['vlt', 'revert']
         if picked_index == 0:
-            command = ['vlt', 'revert -R', vlt_root(working_dir)]
+            command += ['-R', vlt_root(working_dir)]
+            self.run_command(command, self.show_output, working_dir=working_dir)
         else:
-            command = ['vlt']
-
             #get rid of (mime/type)
             picked_file = picked_file.strip('"').split(" (")[0]
             #if os.path.isfile(working_dir+"/"+picked_file):
-            command += ['revert']
+            #   command += ['revert']
             #else:
             #    command += ['rm']
             command += [picked_file]
 
-        self.run_command(command, self.rerun,
-            working_dir=working_dir)
+            self.run_command(command, self.rerun, working_dir=working_dir)
 
     def rerun(self, result):
         self.run()
+    def show_output(self, result):
+        self.scratch(result, title="Vlt Revert")
+

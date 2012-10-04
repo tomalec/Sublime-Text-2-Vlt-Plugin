@@ -3,5 +3,6 @@
 	"vlt_auto_add": true, // when true, add will occur
 	"vlt_warnings_enabled": true, // will output messages when warnings happen
 	"vlt_log_warnings_to_status": false,
-	"vlt_command": false //path to vlt binary (if not in PATH)
+	"vlt_command": false, //path to vlt binary (if not in PATH)
+	"save_first": true
 }
