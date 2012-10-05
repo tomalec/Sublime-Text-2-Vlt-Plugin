@@ -482,7 +482,7 @@ class VltUpdateAllCommand(VltWindowCommand):
 
 class VltResolveCommand(VltTextCommand):
     def run(self, edit):
-        self.run_command(['vlt', 'resolve', os.path.join(self.get_working_dir(), self.get_file_name())], self.commit_done, True)
+        self.run_command(['vlt', 'res', os.path.join(self.get_working_dir(), self.get_file_name())], self.commit_done, True)
 
     def commit_done(self, result):
         if result.strip():

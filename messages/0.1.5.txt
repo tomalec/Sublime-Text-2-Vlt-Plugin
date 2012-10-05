@@ -1,0 +1,4 @@
+Vlt integration 0.1.5 changelog:
+
+Features:
+ - Resolve command resolves opened file.
