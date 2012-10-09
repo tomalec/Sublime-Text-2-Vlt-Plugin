@@ -28,6 +28,10 @@
         "command": "vlt_resolve"
     },
     {
+        "caption": "vlt: Remove",
+        "command": "vlt_remove"
+    },
+    {
         "caption": "vlt: Revert...",
         "command": "vlt_revert_choice"
     },

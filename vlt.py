@@ -53,7 +53,7 @@ def ConstructCommand(in_command):
 
 def VltCommandOnFile(in_command, in_folder, in_filename):
     command = ConstructCommand('vlt ' + in_command + ' "' + in_filename + '"')
-    #print "vlt [debug]: " + (vlt_root(in_folder) or "[no-vlt repo]") + ': '+ 'vlt ' + in_command + ' "' + in_filename + '"'
+    print "vlt [debug]: " + (vlt_root(in_folder) or "[no-vlt repo]") + ': '+ 'vlt ' + in_command + ' "' + in_filename + '"'
     p = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=in_folder, shell=True)
     result, err = p.communicate()
     
@@ -137,13 +137,13 @@ class VltCommand(object):
         s = sublime.load_settings("vlt.sublime-settings")
 
         if s.get('save_first') and self.active_view() and self.active_view().is_dirty() and not no_save:
-            #print "vlt[debug] save first" 
+            print "vlt[debug] save first" 
             self.active_view().run_command('save')
         if command[0] == 'vlt' and s.get('vlt_command'):
             command[0] = s.get('vlt_command')
         #if not callback:
         #    callback = self.generic_done
-        #print "vlt[debug]: " + ' '.join(command)
+        print "vlt[debug]: " + ' '.join(command)
 
         thread = CommandThread(command, callback, **kwargs)
         thread.start()
@@ -340,7 +340,7 @@ class VltCommitCommand(VltTextCommand):
 
     def commit_done(self, result):
         sublime.status_message(result)
-        #print "vlt[debug]: " + result
+        print "vlt[debug]: " + result
 
 
 class VltAutoCommit(sublime_plugin.EventListener):
@@ -489,6 +489,13 @@ class VltResolveCommand(VltTextCommand):
             self.scratch(result, title="Vlt Update")
         else:
             sublime.status_message(result)
+
+class VltRemoveCommand(VltTextCommand):
+    def run(self, edit):
+        self.run_command(['vlt', 'rm', os.path.join(self.get_working_dir(), self.get_file_name())], self.commit_done, True)
+
+    def commit_done(self, result):
+        sublime.status_message(result)
 
 
 class VltRevertChoiceCommand(VltStatusCommand):

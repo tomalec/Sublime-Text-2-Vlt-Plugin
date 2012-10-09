@@ -1,0 +1,4 @@
+Vlt integration 0.1.6 changelog:
+
+Features:
+ - Remove command removes opened file.
