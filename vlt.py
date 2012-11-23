@@ -331,7 +331,10 @@ class VltCommitAllCommand(VltTextCommand):
         self.run_command(['vlt', 'commit'], self.commit_done, True)
 
     def commit_done(self, result):
-        sublime.status_message(result)
+        if result.strip():
+            self.scratch(result, title="Vlt Commit")
+        else:
+            sublime.status_message("Nothing to show")
 
 
 class VltCommitCommand(VltTextCommand):
@@ -478,6 +481,9 @@ class VltUpdateAllCommand(VltWindowCommand):
         else:
             sublime.status_message("Nothing to show")
 
+class VltUpdateAllForceCommand(VltUpdateAllCommand):
+    def run(self):
+        self.run_command(['vlt', 'update', vlt_root(self.get_working_dir()), '--force' ], self.update_done, True)
     
 
 class VltResolveCommand(VltTextCommand):

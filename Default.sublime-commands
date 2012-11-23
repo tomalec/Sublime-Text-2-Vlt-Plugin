@@ -24,6 +24,10 @@
         "command": "vlt_update_all"
     },
     {
+        "caption": "vlt: (Repo) Force Update All",
+        "command": "vlt_update_all_force"
+    },
+    {
         "caption": "vlt: Resolve",
         "command": "vlt_resolve"
     },

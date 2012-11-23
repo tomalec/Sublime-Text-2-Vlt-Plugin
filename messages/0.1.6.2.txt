@@ -1,0 +1,4 @@
+Vlt integration 0.1.6.2 changelog:
+
+Features:
+ - Update all force command
