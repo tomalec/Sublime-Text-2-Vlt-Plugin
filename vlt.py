@@ -1,17 +1,23 @@
 # Written by Tomek Wytrebowicz (tomalecpub@gmail.com)
 # TODO: vlt add directories (-N non recursive)
-import sublime, sublime_plugin
-
 import os
-import stat
-import subprocess
+import sublime
+import sublime_plugin
 import tempfile
 import threading
-import os.path
+import subprocess
 import functools
+import os.path
 import time
 
 # Plugin Settings are located in 'vlt.sublime-settings' make a copy in the User folder to keep changes
+ 
+# when sublime loads a plugin it's cd'd into the plugin directory. Thus
+# __file__ is useless for my purposes. What I want is "Packages/Git", but
+# allowing for the possibility that someone has renamed the file.
+# Fun discovery: Sublime on windows still requires posix path separators.
+PLUGIN_DIRECTORY = os.getcwd().replace(os.path.normpath(os.path.join(os.getcwd(), '..', '..')) + os.path.sep, '').replace(os.path.sep, '/')
+
 
 vlt_root_cache = {}
 def vlt_root(directory):
@@ -135,7 +141,6 @@ class VltCommand(object):
             kwargs['fallback_encoding'] = self.active_view().settings().get('fallback_encoding').rpartition('(')[2].rpartition(')')[0]
 
         s = sublime.load_settings("vlt.sublime-settings")
-
         if s.get('save_first') and self.active_view() and self.active_view().is_dirty() and not no_save:
             print "vlt[debug] save first" 
             self.active_view().run_command('save')
@@ -267,7 +272,7 @@ class VltStatusCommand(VltWindowCommand):
         root = self.get_working_dir()
         #get rid of (mime/type)
         picked_file = picked_file.split(" (")[0]
-        if picked_status == '?' or picked_status == 'A' or s.get('status_opens_file') or self.force_open:
+        if picked_status == '?' or picked_status == 'A' or picked_status == 'C' or s.get('status_opens_file') or self.force_open:
             if(os.path.isfile(os.path.join(root, picked_file))): self.window.open_file(os.path.join(root, picked_file))
         else:
             self.run_command(['vlt', 'diff', picked_file.strip('"')],
@@ -332,7 +337,7 @@ class VltCommitAllCommand(VltTextCommand):
 
     def commit_done(self, result):
         if result.strip():
-            self.scratch(result, title="Vlt Commit")
+            self.scratch(result, title="Vlt Commit", syntax=plugin_file("syntax/Vlt Status.tmLanguage"))
         else:
             sublime.status_message("Nothing to show")
 
@@ -477,7 +482,8 @@ class VltUpdateAllCommand(VltWindowCommand):
 
     def update_done(self, result):
         if result.strip():
-            self.scratch(result, title="Vlt Update")
+            self.scratch(result, title="Vlt Update",
+                syntax=plugin_file("syntax/Vlt Status.tmLanguage"))
         else:
             sublime.status_message("Nothing to show")
 
@@ -492,7 +498,8 @@ class VltResolveCommand(VltTextCommand):
 
     def commit_done(self, result):
         if result.strip():
-            self.scratch(result, title="Vlt Update")
+            self.scratch(result, title="Vlt Update",
+                syntax=plugin_file("syntax/Vlt Status.tmLanguage"))
         else:
             sublime.status_message(result)
 
@@ -531,5 +538,9 @@ class VltRevertChoiceCommand(VltStatusCommand):
     def rerun(self, result):
         self.run()
     def show_output(self, result):
-        self.scratch(result, title="Vlt Revert")
+        self.scratch(result, title="Vlt Revert",
+                syntax=plugin_file("syntax/Vlt Status.tmLanguage"))
 
+
+def plugin_file(name):
+    return os.path.join(PLUGIN_DIRECTORY, name)
