@@ -4,54 +4,41 @@ import os
 import vlt
 
 
-class VltSideBarAddCommand(sublime_plugin.WindowCommand):
+class VltSideBarAddCommand(vlt.VltWindowCommand):
     def run(self, paths = []):
-        for path in paths:        	
-            folder_name, filename = os.path.split(path)
-            vlt.VltCommandOnFile("add", folder_name, filename);
+        self.run_command(['vlt', 'add'] + paths , self.scratch, 
+            True, status_message="Adding...", title="Vlt Add", 
+            syntax=vlt.plugin_file("syntax/Vlt Status.tmLanguage"))
 
     def is_enabled(self, paths = []):
         return True
 
-    def is_visible(self, paths =[]):
+
+class VltSideBarUpdateCommand(vlt.VltWindowCommand):
+    def run(self, paths = []):
+        self.run_command(['vlt', 'update'] + paths , self.scratch, 
+            True, status_message="Updating...", title="Vlt Update", 
+            syntax=vlt.plugin_file("syntax/Vlt Status.tmLanguage"))
+
+    def is_enabled(self, paths = []):
         return True
+
         
-class VltSideBarUpdateCommand(sublime_plugin.WindowCommand):
+class VltSideBarCommitCommand(vlt.VltWindowCommand):
     def run(self, paths = []):
-    	#TODO aggregate it into one scratch, VltUpdateAllCommand
-        for path in paths:          
-            folder_name, filename = os.path.split(path)
-            vlt.VltCommandOnFile("update", folder_name, filename);
+        self.run_command(['vlt', 'commit'] + paths , self.scratch, 
+            True, status_message="Commiting...", title="Vlt Commit", 
+            syntax=vlt.plugin_file("syntax/Vlt Status.tmLanguage"))
 
     def is_enabled(self, paths = []):
         return True
 
-    def is_visible(self, paths =[]):
-        return True
-        
-class VltSideBarCommitCommand(sublime_plugin.WindowCommand):
+
+class VltSideBarRemoveCommand(vlt.VltWindowCommand):
     def run(self, paths = []):
-        #TODO aggregate it into one scratch, VltCommitAllCommand
-        for path in paths:          
-            folder_name, filename = os.path.split(path)
-            vlt.VltCommandOnFile("commit", folder_name, filename);
+        self.run_command(['vlt', 'rm'] + paths , self.scratch, 
+            True, status_message="removing...", title="Vlt Remove", 
+            syntax=vlt.plugin_file("syntax/Vlt Status.tmLanguage"))
 
     def is_enabled(self, paths = []):
         return True
-
-    def is_visible(self, paths =[]):
-        return True
-
-class VltSideBarRemoveCommand(sublime_plugin.WindowCommand):
-    def run(self, paths = []):
-        #TODO aggregate it into one scratch, VltRemoveCommand
-        for path in paths:          
-            folder_name, filename = os.path.split(path)
-            vlt.VltCommandOnFile("rm", folder_name, filename);
-
-    def is_enabled(self, paths = []):
-        return True
-
-    def is_visible(self, paths =[]):
-        return True
-
