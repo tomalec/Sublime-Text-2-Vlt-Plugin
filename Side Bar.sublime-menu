@@ -5,6 +5,7 @@
 		[
 
 			{ "caption": "add",    "id": "vlt-side-bar-add",    "command": "vlt_side_bar_add",    "args": {"paths": []} },
+			{ "caption": "add & commit",    "id": "vlt-side-bar-add-and-commit",    "command": "vlt_side_bar_add_and_commit",    "args": {"paths": []} },
 			{ "caption": "update", "id": "vlt-side-bar-update", "command": "vlt_side_bar_update", "args": {"paths": []} },
 			{ "caption": "commit", "id": "vlt-side-bar-commit", "command": "vlt_side_bar_commit", "args": {"paths": []} },
 			{ "caption": "remove", "id": "vlt-side-bar-remove", "command": "vlt_side_bar_remove", "args": {"paths": []} },

@@ -3,6 +3,7 @@ Vlt integration 0.1.7 changelog:
 Features:
  - Sidebar commands to execute vlt commands on many files & *folders*
   + add
+  + add & commit
   + update
   + commit
   + remove
