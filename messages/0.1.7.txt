@@ -9,3 +9,5 @@ Features:
   + remove
   + remove & commit
   + status
+
+ - `vlt rename` emulation

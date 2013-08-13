@@ -9,6 +9,7 @@ import subprocess
 import functools
 import os.path
 import time
+import shutil
 
 # Plugin Settings are located in 'vlt.sublime-settings' make a copy in the User folder to keep changes
  
@@ -544,3 +545,39 @@ class VltRevertChoiceCommand(VltStatusCommand):
 
 def plugin_file(name):
     return os.path.join(PLUGIN_DIRECTORY, name)
+
+
+#TODO: aggregate it in one vlt process log.
+class VltRenameCommand(VltTextCommand):
+    def run(self, edit):
+        view = self.active_view()
+        window = self.get_window()
+        window.show_input_panel("New name", os.path.basename( view.file_name() ),
+            self.rename, self.on_change, self.on_cancel)
+    def rename(self, input):
+        view = self.active_view()
+        file = view.file_name()
+        shutil.copy2(file, input)
+        folder_name, filename = os.path.split(file)
+        success, message = Add(folder_name, input)
+        
+        LogResults(success, message)
+
+        if(not success):
+            return 0, message
+        
+        self.run_command(['vlt', 'rm', os.path.join(self.get_working_dir(), self.get_file_name())], self.commit, 
+            True, status_message="Renaming...",
+            file = file)
+
+    def commit(self, result, file, **kwargs):
+        self.run_command(['vlt', 'commit', file], self.scratch, 
+            True, status_message="Commiting...", title="Vlt Rename", 
+            syntax=plugin_file("syntax/Vlt Status.tmLanguage"))
+
+
+    def on_change(self, input):
+        pass
+
+    def on_cancel(self):
+        pass

@@ -40,6 +40,10 @@
         "command": "vlt_revert_choice"
     },
     {
+        "caption": "vlt: Rename...",
+        "command": "vlt_rename"
+    },
+    {
         "caption": "vlt: Status",
         "command": "vlt_status"
     },
