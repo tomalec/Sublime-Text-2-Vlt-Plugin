@@ -59,11 +59,14 @@ def ConstructCommand(in_command):
     return command
 
 def VltCommandOnFile(in_command, in_folder, in_filename):
-    sublime.load_settings("vlt.sublime-settings")
+    # Per http://bugs.python.org/issue8557 shell=True is required to
+    # get $PATH on Windows. Yay portable code.
+    shell = os.name == 'nt'
+
     vlt_command = sublime.load_settings("vlt.sublime-settings").get('vlt_command') or 'vlt'
     command = ConstructCommand(vlt_command+' ' + in_command + ' "' + in_filename + '"')
-    print "vlt [debug]: " + (vlt_root(in_folder) or "[no-vlt repo]") + ': '+ 'vlt ' + in_command + ' "' + in_filename + '"'
-    p = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=in_folder, shell=True)
+    print "vlt [debug]: " + (vlt_root(in_folder) or "[no-vlt repo]") + ': '+ command
+    p = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=in_folder, shell=shell)
     result, err = p.communicate()
     
     if(not err):
