@@ -295,8 +295,7 @@ def WarnUser(message):
     if(vlt_settings.get('vlt_warnings_enabled')):
         if(vlt_settings.get('vlt_log_warnings_to_status')):
             sublime.status_message("vlt [warning]: " + message)
-        else:
-            print "vlt [warning]: " + message
+        print "vlt [warning]: " + message
 
 def LogResults(success, message):
     if(success >= 0):
@@ -367,8 +366,7 @@ class VltAutoCommit(sublime_plugin.EventListener):
         if not vlt_settings.get('vlt_auto_add'):
             WarnUser("Auto Add disabled")
             return
-        folder_name, filename = os.path.split(view.file_name())
-        self.preSaveIsFileInRepo = IsFileInRepo(folder_name, filename)
+        self.preSaveIsFileInRepo = IsFileInRepo(view.file_name())
     def on_post_save(self, view):
         if(self.preSaveIsFileInRepo == -1):
             folder_name, filename = os.path.split(view.file_name())
@@ -430,7 +428,8 @@ class VltAddChoiceCommand(VltStatusCommand):
         self.run()
 
 
-def IsFileInRepo(in_folder, in_filename):
+def IsFileInRepo(filename):
+    in_folder, in_filename = os.path.split(filename)
     success, message =  VltCommandOnFile("info", in_folder, in_filename);
     if(not success):
         return 0, message
@@ -442,12 +441,12 @@ def IsFileInRepo(in_folder, in_filename):
     
     startindex += 8 # advance after "Status: "
 
-    endindex = message.find("\n", startindex) 
+    endindex = message.find('\n', startindex) 
     if(endindex == -1):
-        WarnUser("Unexpected output from 'vlt info'.")
-        return -1
+        status = message[startindex:].strip();
+    else:
+        status = message[startindex:endindex].strip();
 
-    status = message[startindex:endindex].strip();
     if(os.path.isfile(os.path.join(in_folder, in_filename))): # file exists on disk, not being added
         if(status != "unknown"):
             return 1
@@ -468,9 +467,9 @@ def Update(in_folder, in_filename):
 class VltUpdateCommand(sublime_plugin.TextCommand):
     def run(self, edit): 
         if(self.view.file_name()):
-            folder_name, filename = os.path.split(self.view.file_name())
 
-            if(IsFileInRepo(folder_name, filename)):
+            if( IsFileInRepo( self.view.file_name() ) ):
+                folder_name, filename = os.path.split(self.view.file_name())
                 success, message = Update(folder_name, filename)
             else:
                 success = 0
