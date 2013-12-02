@@ -349,11 +349,12 @@ class VltCommitAllCommand(VltTextCommand):
 
 class VltCommitCommand(VltTextCommand):
     def run(self, edit):
-        self.run_command(['vlt', 'commit', os.path.join(self.get_working_dir(), self.get_file_name())], self.commit_done, True)
+        self.run_command(['vlt', 'commit', os.path.join(self.get_working_dir(), self.get_file_name())], 
+            self.commit_done, True, status_message="Commiting...")
 
-    def commit_done(self, result):
-        sublime.status_message(result)
+    def commit_done(self, result, **kwargs):
         print "vlt[debug]: " + result
+        sublime.status_message("Commiting... "+ result.splitlines()[-1])
 
 
 class VltAutoCommit(sublime_plugin.EventListener):
@@ -458,26 +459,20 @@ def IsFileInRepo(filename):
         else:
             return 0
 
-
-# Update section
-def Update(in_folder, in_filename):
-    # update the file
-    return VltCommandOnFile("update", in_folder, in_filename);
-
-class VltUpdateCommand(sublime_plugin.TextCommand):
+class VltUpdateCommand(VltTextCommand):
     def run(self, edit): 
         if(self.view.file_name()):
-
-            if( IsFileInRepo( self.view.file_name() ) ):
-                folder_name, filename = os.path.split(self.view.file_name())
-                success, message = Update(folder_name, filename)
+            if(IsFileInRepo(self.view.file_name())):
+                self.run_command(['vlt', 'update', self.view.file_name() ], self.update_done, True)
             else:
-                success = 0
-                message = "File is not in the repo."
-
-            LogResults(success, message)
+                WarnUser("File is not in the repo.")
         else:
             WarnUser("View does not contain a file")
+    def update_done(self, result):
+        print "vlt[debug]: " + result
+        self.view.run_command("revert")
+        sublime.status_message("File updated")
+
 
 class VltUpdateAllCommand(VltWindowCommand):
     force_open = False
