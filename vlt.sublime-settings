@@ -1,8 +1,8 @@
 {
-	"vlt_auto_commit": true, // when true, commit will occur
-	"vlt_auto_add": true, // when true, add will occur
+	"vlt_auto_commit": true, // If set to true, `ctrl+s` will automatically call commit.
+	"vlt_auto_add": true, // If set to true, `ctrl+s` in new file will automatically call add, and commit.
 	"vlt_warnings_enabled": true, // will output messages when warnings happen
-	"vlt_log_warnings_to_status": false,
+	"vlt_log_warnings_to_status": true,
 	"vlt_command": false, //path to vlt binary (if not in PATH). Use ^ to escape spaces and ().
 	"save_first": true
 }
