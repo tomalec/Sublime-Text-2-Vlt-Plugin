@@ -35,16 +35,25 @@ All commands should work for all files under your repo root directory.
  * `ctrl+shift+p` -> `vlt: Add...` - opens panel with (filtered) files and folder from entire repo, to be added interactively,
  * right click on side menu -> `vlt` -> `add (& commit)` - adds (& commits) selected files and folders, prints detailed output in new tab
 
+![Add file demo](http://tomalec.github.io/Sublime-Text-2-Vlt-Plugin/demo/images/add.gif)
+![Interactive add demo](http://tomalec.github.io/Sublime-Text-2-Vlt-Plugin/demo/images/add...gif)
+![Add from side bar demo](http://tomalec.github.io/Sublime-Text-2-Vlt-Plugin/demo/images/add-side.gif)
+
+
 ### commit
 
  * By default it should try to auto-commit file on save,
  * `ctrl+shift+p` -> `vlt: Commit` - adds currently opened file,
  * right click on side menu -> `vlt` -> `commit` - commits selected items, prints detailed output in new tab.
 
+![Auto-commit demo](http://tomalec.github.io/Sublime-Text-2-Vlt-Plugin/demo/images/commit-auto.gif)
+
 ### status
 
  * `ctrl+shift+p` -> `vlt: Status` - opens panel with `vlt status` results for entire repo, where you can open new/conflicted files, or diff for modified ones,
  * right click on side menu -> `vlt` -> `add status` - opens new tab with `vlt status` results for selected items.
+
+![Status demo](http://tomalec.github.io/Sublime-Text-2-Vlt-Plugin/demo/images/status.gif)
 
 ### update
 
@@ -52,6 +61,9 @@ All commands should work for all files under your repo root directory.
  * `ctrl+shift+p` -> `vlt: Update All` - updates entire repo,
  * `ctrl+shift+p` -> `vlt: (Repo) Force Update All` - updates entire repo with `--force`,
  * right click on side menu -> `vlt` -> `add update` - updates selected items, prints detailed output in new tab.
+
+![Update file demo](http://tomalec.github.io/Sublime-Text-2-Vlt-Plugin/demo/images/update.gif)
+![Update all demo](http://tomalec.github.io/Sublime-Text-2-Vlt-Plugin/demo/images/update-all.gif)
 
 ### remove
 
@@ -66,9 +78,13 @@ All commands should work for all files under your repo root directory.
 
  * `ctrl+shift+p` -> `vlt: Resolve` - marks currently opened file as resolved, so it could be committed afterwards
 
+![Resolve demo](http://tomalec.github.io/Sublime-Text-2-Vlt-Plugin/demo/images/resolve.gif)
+
 ### rename
 
  * `ctrl+shift+p` -> `vlt: Rename...` - prompts for new name, performs file-system copy, `vlt add new`, `vlt commit new`, `vlt remove old`.
+
+![Rename demo](http://tomalec.github.io/Sublime-Text-2-Vlt-Plugin/demo/images/rename.gif)
 
 
 ## Settings
