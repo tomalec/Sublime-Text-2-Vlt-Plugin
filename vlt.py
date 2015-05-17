@@ -65,7 +65,7 @@ def VltCommandOnFile(in_command, in_folder, in_filename):
 
     vlt_command = sublime.load_settings("vlt.sublime-settings").get('vlt_command') or 'vlt'
     command = ConstructCommand(vlt_command+' ' + in_command + ' "' + in_filename + '"')
-    print "vlt [debug]: " + (vlt_root(in_folder) or "[no-vlt repo]") + ': '+ command
+    print("vlt [debug]: " + (vlt_root(in_folder) or "[no-vlt repo]") + ': '+ command)
     p = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=in_folder, shell=shell)
     result, err = p.communicate()
     
@@ -125,9 +125,9 @@ class CommandThread(threading.Thread):
             # output = subprocess.check_output(self.command)
             main_thread(self.on_done,
                 _make_text_safeish(output, self.fallback_encoding), **self.kwargs)
-        except subprocess.CalledProcessError, e:
+        except subprocess.CalledProcessError as e:
             main_thread(self.on_done, e.returncode)
-        except OSError, e:
+        except OSError as e:
             if e.errno == 2:
                 main_thread(sublime.error_message, "Vlt binary could not be found in PATH\n\nConsider using the vlt_command setting for the vlt plugin\n\nPATH is: %s" % os.environ['PATH'])
             else:
@@ -148,13 +148,13 @@ class VltCommand(object):
 
         s = sublime.load_settings("vlt.sublime-settings")
         if s.get('save_first') and self.active_view() and self.active_view().is_dirty() and not no_save:
-            print "vlt[debug] save first" 
+            print("vlt[debug] save first")
             self.active_view().run_command('save')
         if command[0] == 'vlt' and s.get('vlt_command'):
             command[0] = s.get('vlt_command')
         #if not callback:
         #    callback = self.generic_done
-        print "vlt[debug]: " + ' '.join(command)
+        print("vlt[debug]: " + ' '.join(command))
 
         thread = CommandThread(command, callback, **kwargs)
         thread.start()
@@ -295,11 +295,11 @@ def WarnUser(message):
     if(vlt_settings.get('vlt_warnings_enabled')):
         if(vlt_settings.get('vlt_log_warnings_to_status')):
             sublime.status_message("vlt [warning]: " + message)
-        print "vlt [warning]: " + message
+        print("vlt [warning]: " + message.decode('utf-8'))
 
 def LogResults(success, message):
     if(success >= 0):
-        print "vlt: " + message
+        print("vlt: " + message.decode('utf-8'))
     else:
         WarnUser(message);
 
@@ -353,7 +353,7 @@ class VltCommitCommand(VltTextCommand):
             self.commit_done, True, status_message="Commiting...")
 
     def commit_done(self, result, **kwargs):
-        print "vlt[debug]: " + result
+        print("vlt[debug]: " + result.decode('utf-8'))
         sublime.status_message("Commiting... "+ result.splitlines()[-1])
 
 
@@ -469,7 +469,7 @@ class VltUpdateCommand(VltTextCommand):
         else:
             WarnUser("View does not contain a file")
     def update_done(self, result):
-        print "vlt[debug]: " + result
+        print("vlt[debug]: " + result.decode('utf-8'))
         self.view.run_command("revert")
         sublime.status_message("File updated")
 
